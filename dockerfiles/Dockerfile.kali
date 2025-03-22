@@ -1,0 +1,11 @@
+FROM kalilinux/kali-rolling
+
+RUN mkdir -p /etc/X11/Xsession.d/
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get install -y iproute2 nmap ca-certificates wget curl \
+    iputils-ping netcat-traditional socat bind9-dnsutils inetutils-traceroute vim metasploit-framework nuclei nikto
+
+COPY files/kali-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT /entrypoint.sh

@@ -1,0 +1,50 @@
+version: '3'
+services:
+  suricata:
+    hostname: suricata
+    volumes:
+      - ./suricata-rules:/var/lib/suricata/rules
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.suricata
+    privileged: true
+    networks:
+      outside:
+        ipv4_address: 172.16.100.10
+      inside:
+        ipv4_address: 10.0.100.10
+  attacker:
+    container_name: idstest_attacker
+    hostname: attacker
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.kali
+    privileged: true
+    extra_hosts:
+      - "target:10.0.100.20"
+    links:
+      - "suricata:ids"
+    networks:
+      outside:
+        ipv4_address: 172.16.100.15
+  target:
+    container_name: idstest_target
+    hostname: target
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.target
+    privileged: true
+    networks:
+      inside:
+        ipv4_address: 10.0.100.20
+networks:
+  outside:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.100.0/24"
+  inside:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.0.100.0/24"

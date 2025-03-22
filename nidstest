@@ -1,0 +1,66 @@
+#!/bin/bash
+
+COMPONENT=$1
+COMMAND=$2
+
+CONTAINER_RUNNER=""
+if [ -x "$(command -v podman)" ]; then
+    CONTAINER_RUNNER="podman"
+elif [ -x "$(command -v docker)" ]; then
+    CONTAINER_RUNNER="docker"
+else
+    echo "Can't find a container runner!"
+    exit 1
+fi
+
+if [ "$COMPONENT" = "suricata" ]; then
+    if [ "$COMMAND" = "build" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-suricata.yml build
+    elif [ "$COMMAND" = "start" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-suricata.yml up -d
+    elif [ "$COMMAND" = "shell" ]; then
+        $CONTAINER_RUNNER exec -it idstest_suricata_1 bash 
+    elif [ "$COMMAND" = "restart" ]; then
+        $CONTAINER_RUNNER restart idstest_suricata_1
+    elif [ "$COMMAND" = "stop" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-suricata.yml down
+    elif [ "$COMMAND" = "status" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-suricata.yml ps
+    elif [ "$COMMAND" = "logs" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-suricata.yml logs
+    else
+        echo "Invalid command"
+    fi
+elif [ "$COMPONENT" = "snort2" ]; then
+    if [ "$COMMAND" = "build" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-snort2.yml build
+    elif [ "$COMMAND" = "start" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-snort2.yml up -d
+    elif [ "$COMMAND" = "shell" ]; then
+        $CONTAINER_RUNNER exec -it idstest_snort2_1 bash 
+    elif [ "$COMMAND" = "restart" ]; then
+        $CONTAINER_RUNNER restart idstest_snort2_1 
+    elif [ "$COMMAND" = "stop" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-snort2.yml down
+    elif [ "$COMMAND" = "status" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-snort2.yml ps
+    elif [ "$COMMAND" = "logs" ]; then
+        $CONTAINER_RUNNER compose -f docker-compose-snort2.yml logs
+    else
+        echo "Invalid command"
+    fi
+elif [ "$COMPONENT" = "attacker" ]; then
+    if [ "$COMMAND" = "shell" ]; then
+        $CONTAINER_RUNNER exec -it idstest_attacker bash 
+    else
+        echo "Invalid command"
+    fi
+elif [ "$COMPONENT" = "target" ]; then
+    if [ "$COMMAND" = "shell" ]; then
+        $CONTAINER_RUNNER exec -it idstest_target bash 
+    else
+        echo "Invalid command"
+    fi
+else 
+    echo "Invalid components"
+fi

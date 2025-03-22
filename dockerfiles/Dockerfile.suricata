@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get install -y software-properties-common
+
+RUN add-apt-repository -y ppa:oisf/suricata-stable
+
+RUN apt-get install -y suricata iproute2 iptables socat vim
+
+COPY files/suricata.yaml /etc/suricata/suricata.yaml
+
+COPY files/suricata-entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT /entrypoint.sh

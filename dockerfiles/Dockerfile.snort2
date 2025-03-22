@@ -1,0 +1,12 @@
+FROM ubuntu:22.04
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND="noninteractive" apt-get install -y snort iproute2 iptables socat vim
+
+COPY files/snort2.conf /etc/snort/snort.conf
+
+COPY files/snort2-entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT /entrypoint.sh
