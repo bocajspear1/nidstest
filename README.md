@@ -4,7 +4,7 @@ A container-based test environment for Network IDS/IPS. Currently supports Suric
 Sets up a simple network in this fashion:
 
 ```
-attacker [172.16.100.15] --> [172.16.100.10] IDS/IPDS [10.0.100.10] -->  [10.0.100.20] target
+attacker [172.16.100.15] --> [172.16.100.10] IDS/IPS [10.0.100.10] -->  [10.0.100.20] target
 ```
 
 ## Running
